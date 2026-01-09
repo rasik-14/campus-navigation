@@ -2,27 +2,62 @@
 <html>
 <head>
   <title>Smart Campus Navigation</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    #map {
+      height: 80vh;
+      width: 100%;
+    }
+  </style>
 </head>
+
 <body>
+  <div class="app-container">
+    <header class="app-header">
+      <h2>Smart Campus Navigation</h2>
+      <p>Select buildings to view path</p>
+    </header>
 
-<h2>Smart Campus Navigation & Accessibility</h2>
+    <div class="controls">
+      <div class="control-group">
+        <label>From</label>
+        <select id="fromSelect"></select>
+      </div>
 
-<label>
-  <input type="checkbox" id="accessibilityToggle">
-  Accessibility Mode
-</label>
+      <div class="control-group">
+        <label>To</label>
+        <select id="toSelect"></select>
+      </div>
+
+      <div class="button-group">
+        <button class="btn primary" onclick="drawPath()">Show Path</button>
+        <button class="btn secondary" onclick="clearPath()">Clear</button>
+      </div>
+    </div>
+
+<div id="infoBox">
+  <p><b>Distance:</b> <span id="distance">--</span></p>
+  <p><b>Estimated Time:</b> <span id="duration">--</span></p>
+</div>
 
 <div id="map"></div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <div id="map"></div>
+  </div>
 
-<!-- Google Maps -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCDKIPZl4O8RHZo_Tp87HKdx7j3xDbdAvU&callback=initMap"
-  async defer></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
+
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD9zh2vM4gz-JOV-3MpSNYsj9ol4Tv0f_g&callback=initMap"
+    async
+    defer>
+  </script>
 </body>
+
 </html>

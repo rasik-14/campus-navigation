@@ -1,65 +1,105 @@
-  var firebaseConfig = {
-    apiKey: "AIzaSyDk3N0GM5F50O4tDhx6lNSWWLcSzXBQFAg",
-    authDomain: "campusnavigationweb.firebaseapp.com",
-    databaseURL: "https://campusnavigationweb-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "campusnavigationweb",
-    storageBucket: "campusnavigationweb.firebasestorage.app",
-    messagingSenderId: "55248148068",
-    appId: "1:55248148068:web:94191fe44153d2d1ae3171"
-  };
- 
- firebase.initializeApp(firebaseConfig);
+var firebaseConfig = {
+  apiKey: "AIzaSyDk3N0GM5F50O4tDhx6lNSWWLcSzXBQFAg",
+  authDomain: "campusnavigationweb.firebaseapp.com",
+  databaseURL: "https://campusnavigationweb-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "campusnavigationweb"
+};
+
+
+firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
- 
- 
- 
- 
 
 let map;
-let markers = [];
-let accessibilityMode = false;
+let buildings = {};
+let polyline = null;
 
-// Toggle accessibility mode
-document.addEventListener("DOMContentLoaded", () => {
-  const toggle = document.getElementById("accessibilityToggle");
-  if (toggle) {
-    toggle.addEventListener("change", (e) => {
-      accessibilityMode = e.target.checked;
-      loadBuildings();
-    });
-  }
-});
-
-// This function is called by Google Maps API
 function initMap() {
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 18.5204, lng: 73.8567 }, // example campus location
-    zoom: 17
+    center: { lat: 21.103333, lng: 79.004637 },
+    zoom: 18
   });
 
   loadBuildings();
 }
 
-// Example campus buildings (temporary data)
-const buildings = [
-  { name: "CSE Block", lat: 18.5204, lng: 73.8567, hasRamp: true },
-  { name: "Library", lat: 18.5210, lng: 73.8572, hasRamp: true },
-  { name: "Admin Office", lat: 18.5198, lng: 73.8561, hasRamp: false }
-];
-
 function loadBuildings() {
-  // Clear old markers
-  markers.forEach(marker => marker.setMap(null));
-  markers = [];
+  database.ref("buildings").once("value").then(snapshot => {
+    const fromSel = document.getElementById("fromSelect");
+    const toSel = document.getElementById("toSelect");
 
-  buildings.forEach(b => {
-    if (!accessibilityMode || b.hasRamp) {
-      const marker = new google.maps.Marker({
+    fromSel.innerHTML = "";
+    toSel.innerHTML = "";
+
+    snapshot.forEach(child => {
+      const id = child.key;
+      const b = child.val();
+      buildings[id] = b;
+
+      new google.maps.Marker({
         position: { lat: b.lat, lng: b.lng },
         map: map,
         title: b.name
       });
-      markers.push(marker);
-    }
+
+      fromSel.add(new Option(b.name, id));
+      toSel.add(new Option(b.name, id));
+    });
   });
+}
+
+function drawPath() {
+  clearPath();
+
+  const from = buildings[fromSelect.value];
+  const to = buildings[toSelect.value];
+
+  if (!from || !to) {
+    alert("Select both buildings");
+    return;
+  }
+
+  polyline = new google.maps.Polyline({
+    path: [
+      { lat: from.lat, lng: from.lng },
+      { lat: to.lat, lng: to.lng }
+    ],
+    strokeColor: "#FF0000",
+    strokeOpacity: 1,
+    strokeWeight: 4,
+    map: map
+  });
+
+  // 📏 Distance
+  const distanceKm = calculateDistance(
+    from.lat, from.lng,
+    to.lat, to.lng
+  );
+
+  // 🚶 Time (walking speed ≈ 5 km/h)
+  const timeMinutes = (distanceKm / 5) * 60;
+
+  // 🖥️ Show on UI
+  document.getElementById("distance").innerText =
+    (distanceKm * 1000).toFixed(0) + " meters";
+
+  document.getElementById("duration").innerText =
+    Math.ceil(timeMinutes) + " mins";
+}
+
+function clearPath() {
+  if (polyline) polyline.setMap(null);
+}
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; // Earth radius in km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
 }
