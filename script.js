@@ -69,16 +69,14 @@ function drawPath() {
     map: map
   });
 
-  // 📏 Distance
+  
   const distanceKm = calculateDistance(
     from.lat, from.lng,
     to.lat, to.lng
   );
 
-  // 🚶 Time (walking speed ≈ 5 km/h)
   const timeMinutes = (distanceKm / 5) * 60;
 
-  // 🖥️ Show on UI
   document.getElementById("distance").innerText =
     (distanceKm * 1000).toFixed(0) + " meters";
 
