@@ -13,7 +13,8 @@ let map;
 let buildings = {};
 let polyline = null;
 
-function initMap() {
+window.initMap = function () {
+
   map = new google.maps.Map(document.getElementById("map"), {
     center: { lat: 21.103333, lng: 79.004637 },
     zoom: 18

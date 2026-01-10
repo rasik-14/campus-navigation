@@ -11,6 +11,20 @@
       width: 100%;
     }
   </style>
+<script src="config.js"></script>
+
+<script>
+  const gmapsScript = document.createElement("script");
+  gmapsScript.src =
+    "https://maps.googleapis.com/maps/api/js?key=" +
+    CONFIG.GOOGLE_MAPS_KEY +
+    "&callback=initMap";
+  gmapsScript.async = true;
+  gmapsScript.defer = true;
+  document.head.appendChild(gmapsScript);
+</script>
+
+
 </head>
 
 <body>
@@ -44,8 +58,7 @@
 
 <div id="map"></div>
 
-    <div id="map"></div>
-  </div>
+ 
 
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -53,12 +66,23 @@
 
   <script src="script.js"></script>
 
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=key=YOUR_GOOGLE_MAPS_API_KEY
-&callback=initMap"
-    async
-    defer>
-  </script>
-</body>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 
+<!-- Config first -->
+<script src="config.js"></script>
+
+<!-- Your JS after config -->
+<script src="script.js"></script>
+
+<!-- Google Maps LAST -->
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBsrBSfEL_7NrUHXF97uyRyVXOE1KMy1Ds&callback=initMap"
+  async
+  defer
+></script>
+
+
+</body>
 </html>

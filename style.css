@@ -1,8 +1,13 @@
+html, body{
+  height: 100%;
+}
+
 body {
   margin: 0;
   font-family: "Segoe UI", Arial, sans-serif;
   background: #f4f6f9;
 }
+
 
 .app-container {
   max-width: 1200px;
@@ -79,6 +84,11 @@ select {
 
 .btn.secondary:hover {
   background: #cfcfcf;
+}
+
+
+html, body{
+  height: 100%;
 }
 
 #map {
